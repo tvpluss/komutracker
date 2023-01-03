@@ -170,33 +170,33 @@ jobs:
         poetry install  # run again to ensure we have the correct version of PyInstaller
         make package
 
-    - name: Package dmg
-      if: startsWith(runner.os, 'macOS')
-      run: |
-        # Load certificates
-        # TODO: Only load key & sign if env vars for signing exists
-        ./scripts/ci/import-macos-p12.sh
+    # - name: Package dmg
+    #   if: startsWith(runner.os, 'macOS')
+    #   run: |
+    #     # Load certificates
+    #     # TODO: Only load key & sign if env vars for signing exists
+    #     ./scripts/ci/import-macos-p12.sh
 
-        # Build .app and .dmg
-        source venv/bin/activate
-        make dist/KomuTracker.dmg
-        codesign --verbose -s ${APPLE_PERSONALID} dist/KomuTracker.dmg
+    #     # Build .app and .dmg
+    #     source venv/bin/activate
+    #     make dist/KomuTracker.dmg
+    #     codesign --verbose -s ${APPLE_PERSONALID} dist/KomuTracker.dmg
 
-        # Run prechecks
-        brew install akeru-inc/tap/xcnotary
-        xcnotary precheck dist/KomuTracker.app
-        xcnotary precheck dist/KomuTracker.dmg
+    #     # Run prechecks
+    #     brew install akeru-inc/tap/xcnotary
+    #     xcnotary precheck dist/KomuTracker.app
+    #     xcnotary precheck dist/KomuTracker.dmg
 
-        # Notarize
-        make dist/notarize
-        mv dist/KomuTracker.dmg dist/komutracker-$(scripts/package/getversion.sh)-macos-x86_64.dmg
-      env:
-        APPLE_EMAIL: ${{ secrets.APPLE_EMAIL }}
-        APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-        APPLE_PERSONALID: ${{ secrets.APPLE_TEAMID }} # APPLE_PERSONAL_ID == APPLE_TEAM_ID for personal accounts
-        APPLE_TEAMID: ${{ secrets.APPLE_TEAMID }}
-        CERTIFICATE_MACOS_P12_BASE64: ${{ secrets.CERTIFICATE_MACOS_P12_BASE64 }}
-        CERTIFICATE_MACOS_P12_PASSWORD: ${{ secrets.CERTIFICATE_MACOS_P12_PASSWORD }}
+    #     # Notarize
+    #     make dist/notarize
+    #     mv dist/KomuTracker.dmg dist/komutracker-$(scripts/package/getversion.sh)-macos-x86_64.dmg
+    #   env:
+    #     APPLE_EMAIL: ${{ secrets.APPLE_EMAIL }}
+    #     APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+    #     APPLE_PERSONALID: ${{ secrets.APPLE_TEAMID }} # APPLE_PERSONAL_ID == APPLE_TEAM_ID for personal accounts
+    #     APPLE_TEAMID: ${{ secrets.APPLE_TEAMID }}
+    #     CERTIFICATE_MACOS_P12_BASE64: ${{ secrets.CERTIFICATE_MACOS_P12_BASE64 }}
+    #     CERTIFICATE_MACOS_P12_PASSWORD: ${{ secrets.CERTIFICATE_MACOS_P12_PASSWORD }}
 
     - name: Upload packages
       uses: actions/upload-artifact@v3
