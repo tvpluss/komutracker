@@ -42,20 +42,20 @@ jobs:
         submodules: 'recursive'
         fetch-depth: 0
     - name: Set up Python
-      if: runner.os != 'macOS'
+      # if: runner.os != 'macOS'
       uses: actions/setup-python@v1
       with:
-        python-version: ${{ matrix.python_version }}
-    - name: Set up Python for macOS
-      if: runner.os == 'macOS'
-      run: |
-        curl https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-macosx10.9.pkg -o "python.pkg"
-        sudo installer -pkg python.pkg -target /
-        echo "/Library/Frameworks/Python.framework/Versions/${{ matrix.python_version }}/bin" >> $GITHUB_PATH
-        "/Applications/Python ${{ matrix.python_version }}/Install Certificates.command"
-      env:
-        # Add the patch number to the Python version (for FTP download link)
-        PYTHON_VERSION: ${{ matrix.python_version }}.13
+    #     python-version: ${{ matrix.python_version }}
+    # - name: Set up Python for macOS
+    #   if: runner.os == 'macOS'
+    #   run: |
+    #     curl https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-macosx10.9.pkg -o "python.pkg"
+    #     sudo installer -pkg python.pkg -target /
+    #     echo "/Library/Frameworks/Python.framework/Versions/${{ matrix.python_version }}/bin" >> $GITHUB_PATH
+    #     "/Applications/Python ${{ matrix.python_version }}/Install Certificates.command"
+    #   env:
+    #     # Add the patch number to the Python version (for FTP download link)
+    #     PYTHON_VERSION: ${{ matrix.python_version }}.13
   
     - name: Set up Node
       if: ${{!matrix.skip_webui}}
